@@ -26,29 +26,26 @@ const Content = ({ parts }) => {
 	);
 };
 
-// const Total = (props) => {
-// 	return (
-// 		<div>
-// 			<p>
-// 				<strong>
-// 					total of{' '}
-// 					{props.parts[0].exercises +
-// 						props.parts[1].exercises +
-// 						props.parts[2].exercises +
-// 						props.parts[3].exercises}{' '}
-// 					exercises
-// 				</strong>
-// 			</p>
-// 		</div>
-// 	);
-// };
+const Total = ({ parts }) => {
+	const total = parts.reduce((acc, cur) => {
+		acc += cur.exercises;
+		return acc;
+	}, 0);
+	return (
+		<div>
+			<p>
+				<strong>total of {total} exercises</strong>
+			</p>
+		</div>
+	);
+};
 
 const Course = ({ course }) => {
 	return (
 		<div>
 			<Header course={course.name} />
 			<Content parts={course.parts} />
-			{/* <Total parts={course.parts} /> */}
+			<Total parts={course.parts} />
 		</div>
 	);
 };
@@ -72,11 +69,11 @@ const App = () => {
 				name: 'State of a Component',
 				exercises: 14,
 			},
-			// {
-			// 	id: 4,
-			// 	name: 'Redux',
-			// 	exercises: 11,
-			// },
+			{
+				id: 4,
+				name: 'Redux',
+				exercises: 11,
+			},
 		],
 	};
 
