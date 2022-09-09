@@ -1,27 +1,27 @@
-const Header = (props) => {
+const Header = ({ course }) => {
 	return (
 		<div>
-			<h1>{props.course}</h1>
+			<h1>{course}</h1>
 		</div>
 	);
 };
 
-const Part = (props) => {
+const Part = ({ name, exercises }) => {
 	return (
 		<div>
 			<p>
-				{props.name} {props.exercises}
+				{name} {exercises}
 			</p>
 		</div>
 	);
 };
 
-const Content = (props) => {
+const Content = ({ parts }) => {
 	return (
 		<div>
-			<Part name={props.parts[0].name} exercises={props.parts[0].exercises} />
-			<Part name={props.parts[1].name} exercises={props.parts[1].exercises} />
-			<Part name={props.parts[2].name} exercises={props.parts[2].exercises} />
+			{parts.map((part) => (
+				<Part key={part.id} name={part.name} exercises={part.exercises} />
+			))}
 		</div>
 	);
 };
@@ -30,10 +30,14 @@ const Content = (props) => {
 // 	return (
 // 		<div>
 // 			<p>
-// 				Number of exercises{' '}
-// 				{props.parts[0].exercises +
-// 					props.parts[1].exercises +
-// 					props.parts[2].exercises}
+// 				<strong>
+// 					total of{' '}
+// 					{props.parts[0].exercises +
+// 						props.parts[1].exercises +
+// 						props.parts[2].exercises +
+// 						props.parts[3].exercises}{' '}
+// 					exercises
+// 				</strong>
 // 			</p>
 // 		</div>
 // 	);
@@ -54,17 +58,25 @@ const App = () => {
 		name: 'Half Stack application development',
 		parts: [
 			{
+				id: 1,
 				name: 'Fundamentals of React',
 				exercises: 10,
 			},
 			{
+				id: 2,
 				name: 'Using props to pass data',
 				exercises: 7,
 			},
 			{
+				id: 3,
 				name: 'State of a Component',
 				exercises: 14,
 			},
+			// {
+			// 	id: 4,
+			// 	name: 'Redux',
+			// 	exercises: 11,
+			// },
 		],
 	};
 
