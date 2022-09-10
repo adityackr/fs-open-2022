@@ -6,7 +6,13 @@ const App = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		setPersons([...persons, { name: newName }]);
+		const newNameObj = { name: newName };
+		const personsArr = persons.map((person) => JSON.stringify(person));
+		if (personsArr.includes(JSON.stringify(newNameObj))) {
+			alert(`${newName} is already added to phonebook`);
+		} else {
+			setPersons([...persons, newNameObj]);
+		}
 	};
 
 	const handleInputChange = (e) => {
