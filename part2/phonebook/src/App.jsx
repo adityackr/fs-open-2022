@@ -1,22 +1,29 @@
 import { useState } from 'react';
 
 const App = () => {
-	const [persons, setPersons] = useState([{ name: 'Aditya Chakraborty' }]);
+	const [persons, setPersons] = useState([
+		{ name: 'Aditya Chakraborty', number: '+8801711111111' },
+	]);
 	const [newName, setNewName] = useState('');
+	const [newNumber, setNewNumber] = useState('');
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		const newNameObj = { name: newName };
-		const personsArr = persons.map((person) => JSON.stringify(person));
-		if (personsArr.includes(JSON.stringify(newNameObj))) {
+		const newPersonObj = { name: newName, number: newNumber };
+		const personsArr = persons.map((person) => person.name);
+		if (personsArr.includes(newPersonObj.name)) {
 			alert(`${newName} is already added to phonebook`);
 		} else {
-			setPersons([...persons, newNameObj]);
+			setPersons([...persons, newPersonObj]);
 		}
 	};
 
-	const handleInputChange = (e) => {
+	const handleNameInputChange = (e) => {
 		setNewName(e.target.value);
+	};
+
+	const handleNumberInputChange = (e) => {
+		setNewNumber(e.target.value);
 	};
 
 	return (
@@ -24,8 +31,12 @@ const App = () => {
 			<h2>PhoneBook</h2>
 			<form onSubmit={handleSubmit}>
 				<div>
-					name: <input value={newName} onChange={handleInputChange} />
+					name: <input value={newName} onChange={handleNameInputChange} />
+					<br />
+					<br />
+					number: <input value={newNumber} onChange={handleNumberInputChange} />
 				</div>
+				<br />
 				<div>
 					<button type="submit">add</button>
 				</div>
@@ -33,7 +44,9 @@ const App = () => {
 			<h2>Numbers:</h2>
 			<div>
 				{persons.map((person) => (
-					<p key={person.name}>{person.name}</p>
+					<p key={person.name}>
+						{person.name} {person.number}
+					</p>
 				))}
 			</div>
 		</div>
