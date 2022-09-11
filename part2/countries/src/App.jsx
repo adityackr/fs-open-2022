@@ -7,6 +7,7 @@ import Search from './components/Search';
 const App = () => {
 	const [countries, setCountries] = useState([]);
 	const [search, setSearch] = useState('');
+	const [show, setShow] = useState(false);
 
 	useEffect(() => {
 		axios
@@ -16,11 +17,26 @@ const App = () => {
 
 	const handleSearchInputChange = (e) => {
 		setSearch(e.target.value);
+		if (e.target.value === '') {
+			setShow(false);
+		} else {
+			setShow(true);
+		}
+	};
+
+	const handleButtonClick = (e) => {
+		setSearch(e.target.id);
 	};
 
 	const filteredCountries = countries.filter((country) =>
-		country.name.common.toLowerCase().includes(search)
+		country.name.common.toLowerCase().includes(search.toLowerCase())
 	);
+
+	const matchedCountry = filteredCountries.filter((country) =>
+		country.name.common.includes(search)
+	);
+
+	// console.log(matchedCountry);
 
 	return (
 		<div>
@@ -29,8 +45,16 @@ const App = () => {
 					search={search}
 					handleSearchInputChange={handleSearchInputChange}
 				/>
-				<Countries filteredCountries={filteredCountries} search={search} />
-				<Country filteredCountries={filteredCountries} />
+
+				<Countries
+					filteredCountries={filteredCountries}
+					search={search}
+					handleButtonClick={handleButtonClick}
+				/>
+
+				{show && matchedCountry && (
+					<Country filteredCountries={filteredCountries} />
+				)}
 			</div>
 		</div>
 	);

@@ -13,7 +13,11 @@ const Country = ({ filteredCountries }) => {
 							<li key={language}>{language}</li>
 						))}
 					</ul>
-					<img src={country.flags.png} alt="" />
+					<img
+						style={{ backgroundColor: 'darkgray', padding: '1rem' }}
+						src={country.flags.png}
+						alt=""
+					/>
 				</div>
 			)}
 		</div>
