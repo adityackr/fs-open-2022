@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import personsService from '../services/persons';
 
 const PersonForm = ({ persons, setPersons }) => {
 	const [newName, setNewName] = useState('');
@@ -11,7 +12,11 @@ const PersonForm = ({ persons, setPersons }) => {
 		if (personsArr.includes(newPersonObj.name)) {
 			alert(`${newName} is already added to phonebook`);
 		} else {
-			setPersons([...persons, newPersonObj]);
+			personsService.create(newPersonObj).then((returnedData) => {
+				setPersons([...persons, returnedData]);
+				setNewName('');
+				setNewNumber('');
+			});
 		}
 	};
 

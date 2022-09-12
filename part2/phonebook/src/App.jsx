@@ -1,17 +1,16 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+
+import personsService from './services/persons';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [search, setSearch] = useState('');
 
 	useEffect(() => {
-		axios
-			.get('http://localhost:3001/persons')
-			.then((response) => setPersons(response.data));
+		personsService.getAll().then((initialData) => setPersons(initialData));
 	}, []);
 
 	const handleSearchInputChange = (e) => {
