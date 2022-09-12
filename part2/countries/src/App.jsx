@@ -15,6 +15,14 @@ const App = () => {
 			.then((response) => setCountries(response.data));
 	}, []);
 
+	const filteredCountries = countries.filter((country) =>
+		country.name.common.toLowerCase().includes(search.toLowerCase())
+	);
+
+	const matchedCountry = countries.filter((country) =>
+		country.name.common.includes(search)
+	);
+
 	const handleSearchInputChange = (e) => {
 		setSearch(e.target.value);
 		if (e.target.value === '') {
@@ -28,18 +36,10 @@ const App = () => {
 		setSearch(e.target.id);
 	};
 
-	const filteredCountries = countries.filter((country) =>
-		country.name.common.toLowerCase().includes(search.toLowerCase())
-	);
-
-	const matchedCountry = filteredCountries.filter((country) =>
-		country.name.common.includes(search)
-	);
-
 	// console.log(matchedCountry);
 
 	return (
-		<div>
+		<div style={{ width: '300px', margin: 'auto' }}>
 			<div>
 				<Search
 					search={search}
