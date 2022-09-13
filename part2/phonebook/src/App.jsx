@@ -10,6 +10,7 @@ const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [search, setSearch] = useState('');
 	const [notification, setNotification] = useState(null);
+	const [errorMessage, setErrorMessage] = useState(null);
 
 	useEffect(() => {
 		personsService.getAll().then((initialData) => setPersons(initialData));
@@ -24,23 +25,40 @@ const App = () => {
 	);
 
 	const handleDeleteBtn = (e) => {
-		const confirmation = window.confirm(`Delete ${e.target.name}?`);
+		const targetName = e.target.name;
+		const targetId = e.target.id;
+		const confirmation = window.confirm(`Delete ${targetName}?`);
 
 		if (confirmation) {
-			personsService.deleteData(e.target.id).then((response) => {
-				// const index = persons.findIndex((person) => person.id === e.target.id);
-				const newObject = filteredPerson.filter(
-					(person) => person.id !== e.target.id
-				);
-				setPersons([...newObject]);
-			});
+			personsService
+				.deleteData(targetId)
+				.then((response) => {
+					const newObject = filteredPerson.filter(
+						(person) => person.id !== targetId
+					);
+					setPersons([...newObject]);
+				})
+				.catch((error) => {
+					setErrorMessage(
+						`Information of ${targetName} has already been removed from the server`
+					);
+					setTimeout(() => {
+						setErrorMessage(null);
+					}, 5000);
+					setPersons(persons.filter((p) => p.id !== targetId));
+				});
 		}
 	};
 
 	return (
 		<div>
 			<h2>PhoneBook</h2>
-			{notification && <Notification message={notification} />}
+			{notification && (
+				<Notification message={notification} customClass="notification" />
+			)}
+			{errorMessage && (
+				<Notification message={errorMessage} customClass="error" />
+			)}
 			<Filter
 				search={search}
 				handleSearchInputChange={handleSearchInputChange}

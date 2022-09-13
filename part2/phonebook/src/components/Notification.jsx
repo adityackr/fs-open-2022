@@ -4,7 +4,7 @@ const Notification = ({ message, customClass }) => {
 	if (message === null) {
 		return null;
 	}
-	return <div className="notification">{message}</div>;
+	return <div className={customClass}>{message}</div>;
 };
 
 export default Notification;
