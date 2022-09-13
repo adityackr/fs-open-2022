@@ -1,19 +1,14 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": 1
+      "name": "Arpita",
+      "number": "4412215445",
+      "id": "GQLnmUryf"
     },
     {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": 2
-    },
-    {
-      "name": "Dan Abramov",
-      "number": "12-43-234345",
-      "id": 3
+      "name": "Aditya",
+      "number": "0131111111111",
+      "id": "BRLXSzL76"
     }
   ]
 }

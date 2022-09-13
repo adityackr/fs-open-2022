@@ -15,7 +15,27 @@ const PersonForm = ({ persons, setPersons }) => {
 		};
 		const personsArr = persons.map((person) => person.name);
 		if (personsArr.includes(newPersonObj.name)) {
-			alert(`${newName} is already added to phonebook`);
+			const confirmation = window.confirm(
+				`${newName} is already added to phonebook, replace the old number with a new one?`
+			);
+
+			const personToUpdate = persons.filter(
+				(person) => person.name === newPersonObj.name
+			);
+
+			if (confirmation) {
+				personsService
+					.update(personToUpdate[0].id, newPersonObj)
+					.then((returnedData) => {
+						const index = persons.findIndex(
+							(person) => person.name === returnedData.name
+						);
+						persons.splice(index, 1, returnedData);
+						setPersons([...persons]);
+						setNewName('');
+						setNewNumber('');
+					});
+			}
 		} else {
 			personsService.create(newPersonObj).then((returnedData) => {
 				setPersons([...persons, returnedData]);

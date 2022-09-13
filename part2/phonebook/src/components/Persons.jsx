@@ -5,14 +5,14 @@ const Persons = ({ filteredPerson, handleDeleteBtn }) => {
 				<div key={person.id}>
 					<p>
 						{person.name} {person.number}{' '}
+						<input
+							name={person.name}
+							id={person.id}
+							type="button"
+							value="delete"
+							onClick={handleDeleteBtn}
+						/>
 					</p>
-					<input
-						name={person.name}
-						id={person.id}
-						type="button"
-						value="delete"
-						onClick={handleDeleteBtn}
-					/>
 				</div>
 			))}
 		</div>
