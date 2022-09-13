@@ -21,6 +21,20 @@ const App = () => {
 		person.name.toLowerCase().includes(search)
 	);
 
+	const handleDeleteBtn = (e) => {
+		const confirmation = window.confirm(`Delete ${e.target.name}?`);
+
+		if (confirmation) {
+			personsService.deleteData(e.target.id).then((response) => {
+				// const index = persons.findIndex((person) => person.id === e.target.id);
+				const newObject = filteredPerson.filter(
+					(person) => person.id !== e.target.id
+				);
+				setPersons([...newObject]);
+			});
+		}
+	};
+
 	return (
 		<div>
 			<h2>PhoneBook</h2>
@@ -32,7 +46,10 @@ const App = () => {
 			<PersonForm persons={persons} setPersons={setPersons} />
 			<h2>Numbers:</h2>
 			<div>
-				<Persons filteredPerson={filteredPerson} />
+				<Persons
+					filteredPerson={filteredPerson}
+					handleDeleteBtn={handleDeleteBtn}
+				/>
 			</div>
 		</div>
 	);
