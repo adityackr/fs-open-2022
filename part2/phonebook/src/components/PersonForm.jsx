@@ -2,7 +2,7 @@ import { useState } from 'react';
 import shortid from 'shortid';
 import personsService from '../services/persons';
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, notification, setNotification }) => {
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 
@@ -43,6 +43,11 @@ const PersonForm = ({ persons, setPersons }) => {
 				setNewNumber('');
 			});
 		}
+
+		setNotification(`Added ${newPersonObj.name}`);
+		setTimeout(() => {
+			setNotification(null);
+		}, 5000);
 	};
 
 	const handleNameInputChange = (e) => {
