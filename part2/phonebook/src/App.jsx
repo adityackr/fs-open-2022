@@ -26,17 +26,16 @@ const App = () => {
 
 	const handleDeleteBtn = (e) => {
 		const targetName = e.target.name;
-		const targetId = e.target.id;
+		const targetId = Number(e.target.id);
 		const confirmation = window.confirm(`Delete ${targetName}?`);
 
 		if (confirmation) {
 			personsService
 				.deleteData(targetId)
 				.then((response) => {
-					const newObject = filteredPerson.filter(
-						(person) => person.id !== targetId
-					);
-					setPersons([...newObject]);
+					console.log(response);
+					const newObject = persons.filter((person) => person.id !== targetId);
+					setPersons(newObject);
 				})
 				.catch((error) => {
 					setErrorMessage(
