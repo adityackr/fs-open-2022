@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import shortid from 'shortid';
 import personsService from '../services/persons';
 
 const PersonForm = ({ persons, setPersons, notification, setNotification }) => {
@@ -11,7 +10,6 @@ const PersonForm = ({ persons, setPersons, notification, setNotification }) => {
 		const newPersonObj = {
 			name: newName,
 			number: newNumber,
-			id: shortid.generate(),
 		};
 		const personsArr = persons.map((person) => person.name);
 		if (personsArr.includes(newPersonObj.name)) {

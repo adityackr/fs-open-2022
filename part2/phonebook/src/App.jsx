@@ -26,7 +26,7 @@ const App = () => {
 
 	const handleDeleteBtn = (e) => {
 		const targetName = e.target.name;
-		const targetId = Number(e.target.id);
+		const targetId = e.target.id;
 		const confirmation = window.confirm(`Delete ${targetName}?`);
 
 		if (confirmation) {
