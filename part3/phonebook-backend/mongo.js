@@ -9,11 +9,11 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2];
 
-const url = `mongodb+srv://aditya:${password}@cluster0.usjbg.mongodb.net/phonebook?retryWrites=true&w=majority`;
+const url = `mongodb+srv://phonebook:${password}@cluster0.usjbg.mongodb.net/phonebook?retryWrites=true&w=majority`;
 
 const personSchema = new Schema({
-	person: String,
-	phone: String,
+	name: String,
+	number: String,
 });
 
 const Person = new model('Person', personSchema);
@@ -24,10 +24,10 @@ if (process.argv.length === 3) {
 			return Person.find({});
 		})
 		.then((result) => {
-			console.log('phonebook:');
-			result.forEach((p) => {
-				console.log(p.person, p.phone);
-			});
+			console.log(result);
+			// result.forEach((p) => {
+			// 	console.log(p.person, p.phone);
+			// });
 			connection.close();
 		})
 		.catch((err) => console.log(err));
@@ -37,8 +37,8 @@ if (process.argv.length === 5) {
 	connect(url)
 		.then((result) => {
 			const person = new Person({
-				person: process.argv[3],
-				phone: process.argv[4],
+				name: process.argv[3],
+				number: process.argv[4],
 			});
 			return person.save();
 		})

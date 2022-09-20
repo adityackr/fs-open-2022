@@ -1,7 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const app = express();
+const Person = require('./models/person');
 
 app.use(express.json());
 app.use(express.static('build'));
@@ -40,7 +42,9 @@ const generateId = () => {
 };
 
 app.get('/api/persons', (req, res) => {
-	res.json(persons);
+	Person.find({})
+		.then((persons) => res.json(persons))
+		.catch((error) => console.log(error.message));
 });
 
 app.post('/api/persons', (req, res) => {
@@ -71,10 +75,6 @@ app.post('/api/persons', (req, res) => {
 	res.json(person);
 });
 
-app.get('/', (req, res) => {
-	res.send('');
-});
-
 app.get('/api/persons/:id', (req, res) => {
 	const id = Number(req.params.id);
 	const person = persons.find((p) => p.id === id);
@@ -91,6 +91,10 @@ app.delete('/api/persons/:id', (req, res) => {
 	persons = persons.filter((p) => p.id !== id);
 
 	res.status(204).end();
+});
+
+app.get('/', (req, res) => {
+	res.send('');
 });
 
 const PORT = process.env.PORT || 3001;
