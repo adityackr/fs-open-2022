@@ -11,11 +11,13 @@
 		"morgan": "^1.10.0"
 	},
 	"devDependencies": {
+		"eslint": "^8.23.1",
 		"nodemon": "^2.0.19"
 	},
 	"scripts": {
 		"start": "node index.js",
 		"dev": "nodemon index.js",
-		"build:ui": "rm -rf build && cd ../../part2/phonebook && yarn run build && cp -r build ../../part3/phonebook-backend"
+		"build:ui": "rm -rf build && cd ../../part2/phonebook && yarn run build && cp -r build ../../part3/phonebook-backend",
+		"lint": "eslint ."
 	}
 }
