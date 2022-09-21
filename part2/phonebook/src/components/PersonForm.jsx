@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import personsService from '../services/persons';
 
-const PersonForm = ({ persons, setPersons, notification, setNotification }) => {
+const PersonForm = ({
+	persons,
+	setPersons,
+	setNotification,
+	setErrorMessage,
+}) => {
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 
@@ -32,20 +37,37 @@ const PersonForm = ({ persons, setPersons, notification, setNotification }) => {
 						setPersons([...persons]);
 						setNewName('');
 						setNewNumber('');
+						setNotification(`Added ${newPersonObj.name}`);
+						setTimeout(() => {
+							setNotification(null);
+						}, 5000);
+					})
+					.catch((error) => {
+						setErrorMessage(error.response.data.error);
+						setTimeout(() => {
+							setErrorMessage(null);
+						}, 5000);
 					});
 			}
 		} else {
-			personsService.create(newPersonObj).then((returnedData) => {
-				setPersons([...persons, returnedData]);
-				setNewName('');
-				setNewNumber('');
-			});
+			personsService
+				.create(newPersonObj)
+				.then((returnedData) => {
+					setPersons([...persons, returnedData]);
+					setNewName('');
+					setNewNumber('');
+					setNotification(`Added ${newPersonObj.name}`);
+					setTimeout(() => {
+						setNotification(null);
+					}, 5000);
+				})
+				.catch((error) => {
+					setErrorMessage(error.response.data.error);
+					setTimeout(() => {
+						setErrorMessage(null);
+					}, 5000);
+				});
 		}
-
-		setNotification(`Added ${newPersonObj.name}`);
-		setTimeout(() => {
-			setNotification(null);
-		}, 5000);
 	};
 
 	const handleNameInputChange = (e) => {
