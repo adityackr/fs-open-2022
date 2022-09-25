@@ -73,6 +73,17 @@ test('blog without likes is added as 0', async () => {
 	expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0);
 });
 
+test('blog without title and url cannot be added', async () => {
+	const newBlog = {
+		author: 'Aditya Chakraborty',
+	};
+
+	await api.post('/api/blogs').send(newBlog).expect(400);
+
+	const blogsAtEnd = await helper.blogsInDb();
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
