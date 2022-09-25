@@ -56,6 +56,23 @@ test('a valid blog can be added', async () => {
 	expect(blogsAtEnd).toContainEqual(newBlog);
 });
 
+test('blog without likes is added as 0', async () => {
+	const newBlog = {
+		title: 'Lecture 42 - React Custom Hooks',
+		author: 'Aditya Chakraborty',
+		url: 'https://stacklearner.com/lecture-42-react-custom-hooks',
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newBlog)
+		.expect(201)
+		.expect('Content-Type', /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDb();
+	expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
