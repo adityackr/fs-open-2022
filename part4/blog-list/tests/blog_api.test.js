@@ -34,6 +34,28 @@ test('the unique identifier of the blog posts is id', async () => {
 	expect(blogs[0].id).toBeDefined();
 }, 100000);
 
+test('a valid blog can be added', async () => {
+	const newBlog = {
+		title: 'Lecture 42 - React Custom Hooks',
+		author: 'Aditya Chakraborty',
+		url: 'https://stacklearner.com/lecture-42-react-custom-hooks',
+		likes: 30,
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newBlog)
+		.expect(201)
+		.expect('Content-Type', /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDb();
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+	newBlog.id = blogsAtEnd[blogsAtEnd.length - 1].id;
+
+	expect(blogsAtEnd).toContainEqual(newBlog);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
