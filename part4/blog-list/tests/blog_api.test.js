@@ -2,17 +2,19 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const helper = require('./test_helper');
+const bcrypt = require('bcryptjs');
 
 const api = supertest(app);
 
-beforeEach(async () => {
-	await Blog.deleteMany({});
-
-	await Blog.insertMany(helper.initialBlogs);
-}, 100000);
-
 describe('when there is initially some blogs saved', () => {
+	beforeEach(async () => {
+		await Blog.deleteMany({});
+
+		await Blog.insertMany(helper.initialBlogs);
+	}, 100000);
+
 	test('blogs are returned as json', async () => {
 		await api
 			.get('/api/blogs')
@@ -134,6 +136,61 @@ describe('Update a blog', () => {
 		const blogsAtEnd = await helper.blogsInDb();
 
 		expect(blogsAtEnd[0].likes).toBe(updatedLikes.likes);
+	});
+});
+
+describe('adding a user', () => {
+	beforeEach(async () => {
+		await User.deleteMany({});
+
+		const passwordHash = await bcrypt.hash('sekret', 10);
+		const user = new User({ username: 'root', passwordHash });
+
+		await user.save();
+	}, 100000);
+
+	test('create fails with proper status code when username or password is missing', async () => {
+		const usersAtStart = await helper.usersInDb();
+
+		const newUser = {
+			username: '',
+			name: 'xyz',
+			password: '',
+		};
+
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/);
+
+		expect(result.body.error).toContain('missing username or password');
+
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toHaveLength(usersAtStart.length);
+	});
+
+	test('create fails with proper status code when username or password is not at least 3 characters long', async () => {
+		const usersAtStart = await helper.usersInDb();
+
+		const newUser = {
+			username: 'a',
+			name: 'xyz',
+			password: 'b',
+		};
+
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/);
+
+		expect(result.body.error).toContain(
+			'username or password must be at least 3 characters long'
+		);
+
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toHaveLength(usersAtStart.length);
 	});
 });
 
