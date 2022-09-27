@@ -67,7 +67,28 @@ describe('viewing a specific blog', () => {
 });
 
 describe('addition of a new blog', () => {
+	let token = null;
+	beforeAll(async () => {
+		await User.deleteMany({});
+
+		const passwordHash = await bcrypt.hash('password', 10);
+		const user = new User({ username: 'root', passwordHash });
+
+		await user.save();
+
+		// Login user to get token
+		await api
+			.post('/api/login')
+			.send({ username: 'root', password: 'password' })
+			.then((res) => {
+				return (token = res.body.token);
+			});
+
+		return token;
+	}, 100000);
+
 	test('succeeds with valid data', async () => {
+		const blogsAtStart = await helper.blogsInDb();
 		const newBlog = {
 			title: 'Lecture 42 - React Custom Hooks',
 			author: 'Aditya Chakraborty',
@@ -76,6 +97,7 @@ describe('addition of a new blog', () => {
 
 		await api
 			.post('/api/blogs')
+			.set('Authorization', `bearer ${token}`)
 			.send(newBlog)
 			.expect(201)
 			.expect('Content-Type', /application\/json/);
@@ -83,23 +105,49 @@ describe('addition of a new blog', () => {
 		const blogsAtEnd = await helper.blogsInDb();
 		const blogToCompare = blogsAtEnd[blogsAtEnd.length - 1];
 		expect(blogToCompare.likes).toBe(0);
-		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+		expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1);
 
 		newBlog.id = blogToCompare.id;
 		newBlog.likes = blogToCompare.likes;
 
-		expect(blogsAtEnd).toContainEqual(newBlog);
+		expect(blogToCompare.title).toBe(newBlog.title);
 	});
 
 	test('blog without title and url cannot be added', async () => {
+		const blogsAtStart = await helper.blogsInDb();
 		const newBlog = {
 			author: 'Aditya Chakraborty',
 		};
 
-		await api.post('/api/blogs').send(newBlog).expect(400);
+		await api
+			.post('/api/blogs')
+			.set('Authorization', `bearer ${token}`)
+			.send(newBlog)
+			.expect(400);
 
 		const blogsAtEnd = await helper.blogsInDb();
-		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+		expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
+	});
+
+	test('unauthorized user cannot create a blog', async () => {
+		const blogsAtStart = await helper.blogsInDb();
+		const newBlog = {
+			title: 'New blog',
+			author: 'Jane Doe',
+			url: 'http://dummyurl.com',
+		};
+
+		token = null;
+
+		await api
+			.post('/api/blogs')
+			.set('Authorization', `Bearer ${token}`)
+			.send(newBlog)
+			.expect(401);
+
+		const blogsAtEnd = await helper.blogsInDb();
+
+		expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
 	});
 });
 
