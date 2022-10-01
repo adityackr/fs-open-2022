@@ -12,6 +12,8 @@ const App = () => {
 	const [password, setPassword] = useState('');
 	const [user, setUser] = useState(null);
 	const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' });
+	const [notification, setNotification] = useState('');
+	const [error, setError] = useState('');
 
 	useEffect(() => {
 		fetchBlogs();
@@ -42,7 +44,8 @@ const App = () => {
 			setUsername('');
 			setPassword('');
 		} catch (exception) {
-			console.log(exception);
+			setError('wrong username or password');
+			setTimeout(() => setError(''), 3000);
 		}
 	};
 
@@ -58,22 +61,23 @@ const App = () => {
 		setNewBlog(oldState);
 	};
 
-	const handleAddBlog = (e) => {
+	const handleAddBlog = async (e) => {
 		e.preventDefault();
 		const newBlogWithId = {
 			...newBlog,
 			id: (Math.floor(Math.random()) * 1000000).toString(),
 		};
 
-		blogService.create(newBlogWithId).then((returnedBlog) => {
-			setBlogs([...blogs, newBlogWithId]);
-			Object.keys(newBlog).map((key) => (newBlog[key] = ''));
-		});
+		const blog = await blogService.create(newBlogWithId);
+		setNotification(`a new blog ${blog.title} by ${blog.author} added`);
+		setTimeout(() => setNotification(''), 3000);
+		Object.keys(newBlog).map((key) => (newBlog[key] = ''));
 	};
 
 	const loginForm = () => (
 		<div>
 			<h1>login to application</h1>
+			{error && <p className="error">{error}</p>}
 			<form onSubmit={handleLogin}>
 				<LoginInput
 					text={'username'}
@@ -114,6 +118,7 @@ const App = () => {
 			) : (
 				<div>
 					<h2>blogs</h2>
+					{notification && <p className="notification">{notification}</p>}
 					<p>
 						{user.name} logged-in <button onClick={handleLogout}>logout</button>
 					</p>
