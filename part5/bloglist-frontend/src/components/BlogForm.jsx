@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import BlogInput from './BlogInput';
-import SubmitButton from './SumbitButton';
+import SubmitButton from './SubmitButton';
 
 const BlogForm = ({ createBlog }) => {
 	const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' });

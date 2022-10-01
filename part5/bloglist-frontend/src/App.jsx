@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginInput from './components/LoginInput';
-import SubmitButton from './components/SumbitButton';
+import SubmitButton from './components/SubmitButton';
 import Toggle from './components/Toggle';
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -32,7 +32,8 @@ const App = () => {
 
 	const fetchBlogs = async () => {
 		const blogs = await blogService.getAll();
-		setBlogs(blogs);
+
+		setBlogs(blogs.sort((a, b) => b.likes - a.likes));
 	};
 
 	const handleLogin = async (e) => {
@@ -63,21 +64,10 @@ const App = () => {
 		setTimeout(() => setNotification(''), 3000);
 	};
 
-	const handleLikes = async (id, blogObject) => {
-		await blogService.update(id, blogObject);
+	const handleLikes = async (id, updatedBlog) => {
+		await blogService.update(id, updatedBlog);
 
-		// const updatedBlog = {
-		// 	...blogObject,
-		// 	id,
-		// };
-
-		blogs.splice(
-			blogs.findIndex((blog) => blog.id === id),
-			0,
-			blogObject
-		);
-
-		setBlogs([...blogs]);
+		setBlogs(blogs.map((blog) => (blog.user.id === id ? updatedBlog : blog)));
 	};
 
 	const loginForm = () => (
