@@ -63,6 +63,23 @@ const App = () => {
 		setTimeout(() => setNotification(''), 3000);
 	};
 
+	const handleLikes = async (id, blogObject) => {
+		await blogService.update(id, blogObject);
+
+		// const updatedBlog = {
+		// 	...blogObject,
+		// 	id,
+		// };
+
+		blogs.splice(
+			blogs.findIndex((blog) => blog.id === id),
+			0,
+			blogObject
+		);
+
+		setBlogs([...blogs]);
+	};
+
 	const loginForm = () => (
 		<div>
 			<h1>login to application</h1>
@@ -108,7 +125,7 @@ const App = () => {
 					<div>{blogForm()}</div>
 					<div>
 						{blogs.map((blog) => (
-							<Blog key={blog.id} blog={blog} />
+							<Blog updatedLike={handleLikes} key={blog.id} blog={blog} />
 						))}
 					</div>
 				</div>
