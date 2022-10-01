@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Blog from './components/Blog';
-import BlogInput from './components/BlogInput';
+import BlogForm from './components/BlogForm';
 import LoginInput from './components/LoginInput';
 import SubmitButton from './components/SumbitButton';
+import Toggle from './components/Toggle';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -11,9 +12,10 @@ const App = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [user, setUser] = useState(null);
-	const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' });
 	const [notification, setNotification] = useState('');
 	const [error, setError] = useState('');
+
+	const blogFormRef = useRef();
 
 	useEffect(() => {
 		fetchBlogs();
@@ -54,24 +56,11 @@ const App = () => {
 		setUser(null);
 	};
 
-	const handleChange = (e) => {
-		const { name, value } = e.target;
-		const oldState = JSON.parse(JSON.stringify(newBlog));
-		oldState[name] = value;
-		setNewBlog(oldState);
-	};
-
-	const handleAddBlog = async (e) => {
-		e.preventDefault();
-		const newBlogWithId = {
-			...newBlog,
-			id: (Math.floor(Math.random()) * 1000000).toString(),
-		};
-
-		const blog = await blogService.create(newBlogWithId);
+	const handleAddBlog = async (blogObject) => {
+		blogFormRef.current.toggleVisibility();
+		const blog = await blogService.create(blogObject);
 		setNotification(`a new blog ${blog.title} by ${blog.author} added`);
 		setTimeout(() => setNotification(''), 3000);
-		Object.keys(newBlog).map((key) => (newBlog[key] = ''));
 	};
 
 	const loginForm = () => (
@@ -99,16 +88,9 @@ const App = () => {
 	);
 
 	const blogForm = () => (
-		<form onSubmit={handleAddBlog}>
-			<BlogInput name={'title'} value={newBlog.title} onChange={handleChange} />
-			<BlogInput
-				name={'author'}
-				value={newBlog.author}
-				onChange={handleChange}
-			/>
-			<BlogInput name={'url'} value={newBlog.url} onChange={handleChange} />
-			<SubmitButton text={'create'} />
-		</form>
+		<Toggle buttonLabel={'new note'} ref={blogFormRef}>
+			<BlogForm createBlog={handleAddBlog} />
+		</Toggle>
 	);
 
 	return (
