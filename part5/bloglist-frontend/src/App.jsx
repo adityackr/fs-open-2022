@@ -70,6 +70,13 @@ const App = () => {
 		setBlogs(blogs.map((blog) => (blog.user.id === id ? updatedBlog : blog)));
 	};
 
+	const handleDelete = async (id) => {
+		await blogService.remove(id);
+
+		const updatedBlogs = blogs.filter((blog) => blog.id !== id);
+		setBlogs(updatedBlogs);
+	};
+
 	const loginForm = () => (
 		<div>
 			<h1>login to application</h1>
@@ -115,7 +122,12 @@ const App = () => {
 					<div>{blogForm()}</div>
 					<div>
 						{blogs.map((blog) => (
-							<Blog updatedLike={handleLikes} key={blog.id} blog={blog} />
+							<Blog
+								deleteBlog={handleDelete}
+								updatedLike={handleLikes}
+								key={blog.id}
+								blog={blog}
+							/>
 						))}
 					</div>
 				</div>
