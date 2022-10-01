@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Blog from './components/Blog';
+import BlogInput from './components/BlogInput';
 import LoginInput from './components/LoginInput';
+import SubmitButton from './components/SumbitButton';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -9,6 +11,7 @@ const App = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [user, setUser] = useState(null);
+	const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' });
 
 	useEffect(() => {
 		fetchBlogs();
@@ -48,6 +51,26 @@ const App = () => {
 		setUser(null);
 	};
 
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		const oldState = JSON.parse(JSON.stringify(newBlog));
+		oldState[name] = value;
+		setNewBlog(oldState);
+	};
+
+	const handleAddBlog = (e) => {
+		e.preventDefault();
+		const newBlogWithId = {
+			...newBlog,
+			id: (Math.floor(Math.random()) * 1000000).toString(),
+		};
+
+		blogService.create(newBlogWithId).then((returnedBlog) => {
+			setBlogs([...blogs, newBlogWithId]);
+			Object.keys(newBlog).map((key) => (newBlog[key] = ''));
+		});
+	};
+
 	const loginForm = () => (
 		<div>
 			<h1>login to application</h1>
@@ -66,9 +89,22 @@ const App = () => {
 					name={'Password'}
 					onChange={({ target }) => setPassword(target.value)}
 				/>
-				<button type="submit">Login</button>
+				<SubmitButton text={'Login'} />
 			</form>
 		</div>
+	);
+
+	const blogForm = () => (
+		<form onSubmit={handleAddBlog}>
+			<BlogInput name={'title'} value={newBlog.title} onChange={handleChange} />
+			<BlogInput
+				name={'author'}
+				value={newBlog.author}
+				onChange={handleChange}
+			/>
+			<BlogInput name={'url'} value={newBlog.url} onChange={handleChange} />
+			<SubmitButton text={'create'} />
+		</form>
 	);
 
 	return (
@@ -81,9 +117,13 @@ const App = () => {
 					<p>
 						{user.name} logged-in <button onClick={handleLogout}>logout</button>
 					</p>
-					{blogs.map((blog) => (
-						<Blog key={blog.id} blog={blog} />
-					))}
+					<h2>Create New</h2>
+					<div>{blogForm()}</div>
+					<div>
+						{blogs.map((blog) => (
+							<Blog key={blog.id} blog={blog} />
+						))}
+					</div>
 				</div>
 			)}
 		</div>
