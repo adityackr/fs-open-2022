@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import BlogInput from './BlogInput';
 import SubmitButton from './SubmitButton';
@@ -35,6 +36,10 @@ const BlogForm = ({ createBlog }) => {
 			<SubmitButton text={'create'} />
 		</form>
 	);
+};
+
+BlogForm.propTypes = {
+	createBlog: PropTypes.func.isRequired,
 };
 
 export default BlogForm;
