@@ -9,14 +9,15 @@ const BlogForm = ({ createBlog }) => {
 		const { name, value } = e.target;
 		const oldState = JSON.parse(JSON.stringify(newBlog));
 		oldState[name] = value;
-		setNewBlog(oldState);
+		setNewBlog({ ...oldState });
 	};
 
 	const handleAddBlog = (e) => {
 		e.preventDefault();
 		createBlog({
-			...newBlog,
-			id: (Math.floor(Math.random()) * 1000000).toString(),
+			title: newBlog.title,
+			author: newBlog.author,
+			url: newBlog.url,
 		});
 
 		Object.keys(newBlog).map((key) => (newBlog[key] = ''));
