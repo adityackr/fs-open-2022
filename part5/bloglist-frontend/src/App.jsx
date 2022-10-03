@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginInput from './components/LoginInput';
-import SubmitButton from './components/SubmitButton';
 import Toggle from './components/Toggle';
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -18,6 +17,7 @@ const App = () => {
 	const blogFormRef = useRef();
 
 	useEffect(() => {
+		// blogService.getAll().then((blogs) => setBlogs([...blogs]));
 		fetchBlogs();
 	});
 
@@ -30,7 +30,7 @@ const App = () => {
 		}
 	}, []);
 
-	const fetchBlogs = async () => {
+	const fetchBlogs = async function () {
 		const blogs = await blogService.getAll();
 
 		setBlogs(blogs.sort((a, b) => b.likes - a.likes));
@@ -42,7 +42,7 @@ const App = () => {
 		try {
 			const user = await loginService.login({ username, password });
 			window.localStorage.setItem('loggedUser', JSON.stringify(user));
-			await blogService.setToken(user.token);
+			blogService.setToken(user.token);
 			setUser(user);
 			setUsername('');
 			setPassword('');
@@ -84,6 +84,7 @@ const App = () => {
 			{error && <p className="error">{error}</p>}
 			<form onSubmit={handleLogin}>
 				<LoginInput
+					id={'username'}
 					text={'username'}
 					type={'text'}
 					value={username}
@@ -91,13 +92,16 @@ const App = () => {
 					onChange={({ target }) => setUsername(target.value)}
 				/>
 				<LoginInput
+					id={'password'}
 					text={'password'}
 					type={'password'}
 					value={password}
 					name={'Password'}
 					onChange={({ target }) => setPassword(target.value)}
 				/>
-				<SubmitButton text={'Login'} />
+				<button id="login-btn" type="submit">
+					Login
+				</button>
 			</form>
 		</div>
 	);
@@ -117,7 +121,7 @@ const App = () => {
 					<h2>blogs</h2>
 					{notification && <p className="notification">{notification}</p>}
 					<p>
-						{user.name} logged-in <button onClick={handleLogout}>logout</button>
+						{user.name} logged in <button onClick={handleLogout}>logout</button>
 					</p>
 					<h2>Create New</h2>
 					<div>{blogForm()}</div>

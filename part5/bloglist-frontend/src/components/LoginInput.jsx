@@ -1,10 +1,16 @@
 import PropTypes from 'prop-types';
 
-const LoginInput = ({ value, onChange, type, name, text }) => {
+const LoginInput = ({ id, value, onChange, type, name, text }) => {
 	return (
 		<div>
 			{text}
-			<input type={type} value={value} name={name} onChange={onChange} />
+			<input
+				id={id}
+				type={type}
+				value={value}
+				name={name}
+				onChange={onChange}
+			/>
 		</div>
 	);
 };
