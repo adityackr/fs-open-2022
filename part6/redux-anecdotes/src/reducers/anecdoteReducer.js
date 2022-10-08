@@ -20,8 +20,8 @@ const asObject = (anecdote) => {
 const initialState = anecdotesAtStart.map(asObject);
 
 const reducer = (state = initialState, action) => {
-	console.log('state now: ', state);
-	console.log('action', action);
+	// console.log('state now: ', state);
+	// console.log('action', action);
 
 	if (action.type === 'VOTE') {
 		const { id } = action.data;
@@ -33,9 +33,22 @@ const reducer = (state = initialState, action) => {
 		return state.map((anecdote) =>
 			anecdote.id !== id ? anecdote : updatedAnecdote
 		);
+	} else if (action.type === 'NEW_ANECDOTE') {
+		return [...state, action.data];
 	}
 
 	return state;
+};
+
+export const createAnecdote = (content) => {
+	return {
+		type: 'NEW_ANECDOTE',
+		data: {
+			content,
+			id: getId(),
+			votes: 0,
+		},
+	};
 };
 
 export const addVote = (id) => {
