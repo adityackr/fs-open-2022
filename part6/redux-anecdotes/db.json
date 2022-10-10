@@ -34,6 +34,11 @@
       "content": "This is from json server",
       "votes": 0,
       "id": "qjuETQ3"
+    },
+    {
+      "content": "check",
+      "votes": 0,
+      "id": "SYRWTtl"
     }
   ]
 }
