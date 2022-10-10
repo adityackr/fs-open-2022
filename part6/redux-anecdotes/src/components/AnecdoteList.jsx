@@ -8,6 +8,7 @@ import Anecdote from './Anecdote';
 
 const AnecdoteList = () => {
 	const anecdotes = useSelector((state) => [...state.anecdotes]);
+	const filter = useSelector((state) => state.filter);
 	const dispatch = useDispatch();
 
 	const vote = (id) => {
@@ -21,6 +22,7 @@ const AnecdoteList = () => {
 		<div>
 			{anecdotes
 				.sort((a, b) => b.votes - a.votes)
+				.filter((a) => a.content.toLowerCase().includes(filter))
 				.map((anecdote) => (
 					<Anecdote
 						anecdote={anecdote}
