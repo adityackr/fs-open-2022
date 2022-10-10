@@ -27,11 +27,7 @@ const anecdoteSlice = createSlice({
 	reducers: {
 		createAnecdote(state, action) {
 			const content = action.payload;
-			state.push({
-				content,
-				id: getId(),
-				votes: 0,
-			});
+			state.push(content);
 		},
 		addVote(state, action) {
 			const id = action.payload;
@@ -52,45 +48,6 @@ const anecdoteSlice = createSlice({
 		},
 	},
 });
-
-// const anecdoteReducer = (state = initialState, action) => {
-// 	// console.log('state now: ', state);
-// 	// console.log('action', action);
-
-// 	if (action.type === 'VOTE') {
-// 		const { id } = action.data;
-// 		const anecdoteToUpdate = state.find((a) => a.id === id);
-// 		const updatedAnecdote = {
-// 			...anecdoteToUpdate,
-// 			votes: anecdoteToUpdate.votes + 1,
-// 		};
-// 		return state.map((anecdote) =>
-// 			anecdote.id !== id ? anecdote : updatedAnecdote
-// 		);
-// 	} else if (action.type === 'NEW_ANECDOTE') {
-// 		return [...state, action.data];
-// 	}
-
-// 	return state;
-// };
-
-// export const createAnecdote = (content) => {
-// 	return {
-// 		type: 'NEW_ANECDOTE',
-// 		data: {
-// 			content,
-// 			id: getId(),
-// 			votes: 0,
-// 		},
-// 	};
-// };
-
-// export const addVote = (id) => {
-// 	return {
-// 		type: 'VOTE',
-// 		data: { id },
-// 	};
-// };
 
 export const { createAnecdote, addVote, appendAnecdote, setAnecdotes } =
 	anecdoteSlice.actions;
