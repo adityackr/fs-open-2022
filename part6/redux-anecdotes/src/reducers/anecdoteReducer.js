@@ -28,7 +28,7 @@ const anecdoteSlice = createSlice({
 	reducers: {
 		addVote(state, action) {
 			const anecdoteToUpdate = action.payload;
-			const { id } = action.payload;
+			const { id } = anecdoteToUpdate;
 
 			return state.map((anecdote) =>
 				anecdote.id !== id ? anecdote : anecdoteToUpdate
